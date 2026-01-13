@@ -55,11 +55,26 @@ void APracticePlayerController::OnPossess(APawn* aPawn)
 {
 	Super::OnPossess(aPawn);
 	ControlledCharacter = Cast<APracticeCharacter>(aPawn);
-	//ControlledCharacter->OnLevelUpdated.BindLambda(
-	//	[this](int NewLevel)
-	//	{
-	//	}
-	//);
+	ControlledCharacter->OnLevelUpdated.BindWeakLambda(
+		this,
+		[this](int NewLevel)
+		{
+			if (HUDWidget.IsValid())
+			{
+				HUDWidget->UpdateLevel(NewLevel);
+			}
+		}
+	);
+	ControlledCharacter->OnExpUpdated.BindWeakLambda(
+		this,
+		[this](float NewExp)
+		{
+			if (HUDWidget.IsValid())
+			{
+				HUDWidget->UpdateExp(NewExp);
+			}
+		}
+	);
 }
 
 void APracticePlayerController::OnUnPossess()
