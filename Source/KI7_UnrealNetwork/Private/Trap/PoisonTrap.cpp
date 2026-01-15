@@ -4,6 +4,8 @@
 #include "Trap/PoisonTrap.h"
 #include "Components/SphereComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -20,6 +22,11 @@ APoisonTrap::APoisonTrap()
 	TrapEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Effect"));
 	TrapEffect->SetupAttachment(RootComponent);
 	TrapEffect->SetAutoActivate(true);
+
+	//ActivateEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ActivateEffect"));
+	//ActivateEffect->SetupAttachment(RootComponent);
+	//ActivateEffect->SetRelativeLocation(FVector::UpVector * 100.0f);
+	//ActivateEffect->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned
@@ -72,12 +79,27 @@ void APoisonTrap::ApplyDamage()
 			if (IsValid(Target))
 			{
 				UGameplayStatics::ApplyDamage(Target, 1.0f, GetInstigatorController(), this, UDamageType::StaticClass());
+				Multicast_ActivateEffect();
 			}
 			else
 			{
 				DamageTargetActors.RemoveAt(i);
 			}
 		}
+	}
+}
+
+void APoisonTrap::Multicast_ActivateEffect_Implementation()
+{
+	if (ActivateEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			ActivateEffect,
+			GetActorLocation() + FVector::UpVector * 100.0f,
+			GetActorRotation(),
+			FVector::OneVector, true, true, 
+			ENCPoolMethod::AutoRelease);
 	}
 }
 

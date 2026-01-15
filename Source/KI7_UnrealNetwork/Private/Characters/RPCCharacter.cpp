@@ -111,7 +111,13 @@ void ARPCCharacter::Client_OnHit_Implementation()
 	APlayerController* PC = Cast<APlayerController>(GetController());
 	PC->ClientStartCameraShake(CameraShakeClass);
 
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), EffectClass, GetActorLocation() + FVector::UpVector * 100.0f, FRotator());
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		GetWorld(), 
+		EffectClass, 
+		GetActorLocation() + FVector::UpVector * 100.0f, 
+		FRotator::ZeroRotator,
+		FVector::OneVector, true, true, ENCPoolMethod::AutoRelease);
+
 }
 
 void ARPCCharacter::OnRef_Health()

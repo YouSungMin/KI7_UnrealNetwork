@@ -31,6 +31,10 @@ protected:
 
 	void ApplyDamage();
 
+private:
+	UFUNCTION(NetMulticast, Unreliable)
+	void Multicast_ActivateEffect();
+
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Trap")
 	TObjectPtr<class USphereComponent> DamageVolume = nullptr;
@@ -39,7 +43,11 @@ protected:
 	TObjectPtr<class UNiagaraComponent> TrapEffect = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trap")
+	TObjectPtr<class UNiagaraSystem> ActivateEffect = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trap")
 	float DamageInterval = 0.2f;
+
 
 private:
 	FTimerHandle DamageTimerHandle;
