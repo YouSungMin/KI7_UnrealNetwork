@@ -21,6 +21,12 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Score")
 	int32 GetMyScore() const { return MyScore; }
 
+	UFUNCTION(BlueprintCallable, Category = "Name")
+	void SetMyName(const FString& NewName);
+
+	UFUNCTION(BlueprintCallable, Category = "Name")
+	const FString& GetMyName() const { return MyName; }
+
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -28,7 +34,16 @@ protected:
 	UFUNCTION()
 	void OnRep_MyScore();
 
+	UFUNCTION()
+	void OnRep_MyName();
+
 protected:
 	UPROPERTY(ReplicatedUsing = OnRep_MyScore, BlueprintReadOnly, Category = "Data")
 	int32 MyScore = 0;
+
+	UPROPERTY(ReplicatedUsing = OnRep_MyName, BlueprintReadOnly, Category = "Data")
+	FString MyName;
+
+
+	TWeakObjectPtr<class UScoreHudWidget> ScoreHud = nullptr;
 };
