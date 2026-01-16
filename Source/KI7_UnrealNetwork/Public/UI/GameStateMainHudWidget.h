@@ -13,8 +13,9 @@ UCLASS()
 class KI7_UNREALNETWORK_API UGameStateMainHudWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 protected:
+	virtual void NativeConstruct()override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Game Data")
@@ -23,6 +24,9 @@ protected:
 protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> TimeText = nullptr;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, meta = (BindWidget))
+	TObjectPtr<class UTextBlock> GameOverText = nullptr;
 
 private:
 	TWeakObjectPtr<class ATestGameState> CachedGameState = nullptr;

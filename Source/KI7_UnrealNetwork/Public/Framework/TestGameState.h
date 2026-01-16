@@ -23,10 +23,11 @@ protected:
 
 public:
 	inline float GetGameElapsedTime() const { return GameElapsedTime; }
-
+	inline bool IsTimeOver(){return GameElapsedTime <= 0.0f;}
 protected:
+	//UPROPERTY(Replicated, BlueprintReadOnly, Category = "Game Data")
+	//float GameElapsedTime = 0.0f;
+
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Game Data")
-	float GameElapsedTime = 0.0f;
-
-
+	float GameElapsedTime = 10.0f;
 };

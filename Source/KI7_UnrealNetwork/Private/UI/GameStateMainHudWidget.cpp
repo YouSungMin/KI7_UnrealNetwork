@@ -6,6 +6,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/TextBlock.h"
 
+void UGameStateMainHudWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	GameOverText->SetVisibility(ESlateVisibility::Hidden);
+}
+
 void UGameStateMainHudWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
@@ -26,5 +32,10 @@ void UGameStateMainHudWidget::UpdateTimeDisplay()
 		int32 Seconds = Total % 60;
 
 		TimeText->SetText(FText::FromString(FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds)));
+		if (CachedGameState->IsTimeOver())
+		{
+			GameOverText->SetVisibility(ESlateVisibility::Visible);
+		}
 	}
+
 }

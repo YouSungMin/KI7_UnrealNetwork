@@ -13,10 +13,22 @@ void ATestGameState::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//if (HasAuthority())
+	//{
+	//	GameElapsedTime += DeltaTime;
+	//	UE_LOG(LogTemp, Log, TEXT("Time update : %.2f"), GameElapsedTime);
+	//}
 	if (HasAuthority())
 	{
-		GameElapsedTime += DeltaTime;
-		UE_LOG(LogTemp, Log, TEXT("Time update : %.2f"), GameElapsedTime);
+		if (GameElapsedTime > 0.0f)
+		{
+			GameElapsedTime -= DeltaTime;
+			UE_LOG(LogTemp, Log, TEXT("Time update : %.2f"), GameElapsedTime);
+		}
+		else
+		{
+			GameElapsedTime = 0.0f;
+		}
 	}
 }
 
