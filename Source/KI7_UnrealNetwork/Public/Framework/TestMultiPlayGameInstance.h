@@ -16,9 +16,22 @@ class KI7_UNREALNETWORK_API UTestMultiPlayGameInstance : public UGameInstance
 public:
 	UTestMultiPlayGameInstance();
 
+	virtual void Init() override;
+
 	void CreateServer();
 	void JoinServer(FString IPAddress);
 	void DisconnectServer();
+
+	inline const FString& GetIPAddress() const {return ServerIP;}
+private:
+	UFUNCTION()
+	void HandleNetworkFailure(
+		UWorld* World, UNetDriver* NetDirever, ENetworkFailure::Type FailureType, const FString& ErrorString);
+
+	UFUNCTION()
+	void HandleTravelFailure(
+		UWorld* World, ETravelFailure::Type FailureType, const FString& ErrorString);
+
 
 protected:
 	// 접속할 서버 IP

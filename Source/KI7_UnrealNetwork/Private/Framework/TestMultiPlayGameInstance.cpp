@@ -1,11 +1,21 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TestMultiPlayGameInstance.h"
+#include "Framework/TestMultiPlayGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 UTestMultiPlayGameInstance::UTestMultiPlayGameInstance()
 {
 	ServerIP = "127.0.0.1";
+}
+
+void UTestMultiPlayGameInstance::Init()
+{
+	Super::Init();
+	if (UEngine* Engine = GetEngine())
+	{
+		Engine->OnNetworkFailure().AddUObject(this, &UTestMultiPlayGameInstance:: HandleNetworkFailure);
+		Engine->OnTravelFailure().AddUObject(this, &UTestMultiPlayGameInstance::HandleTravelFailure);
+	}
 }
 
 void UTestMultiPlayGameInstance::CreateServer()
@@ -103,5 +113,61 @@ void UTestMultiPlayGameInstance::DisconnectServer()
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Green, TEXT("서버 접속 해제 "));
+	}
+}
+
+void UTestMultiPlayGameInstance::HandleNetworkFailure(
+	UWorld* World, UNetDriver* NetDirever, ENetworkFailure::Type FailureType, const FString& ErrorString)
+{
+	UE_LOG(LogNet,Error,TEXT("HandleNetworkFailure 실행"));
+	UE_LOG(LogNet,Error,TEXT("오류 타입 : %d"),(int32)FailureType);
+	UE_LOG(LogNet,Error,TEXT("오류 메시지 : %s"), *ErrorString);
+
+	//switch (FailureType)
+	//{
+	//case ENetworkFailure::NetDriverAlreadyExists:
+	//	break;
+	//case ENetworkFailure::NetDriverCreateFailure:
+	//	break;
+	//case ENetworkFailure::NetDriverListenFailure:
+	//	break;
+	//case ENetworkFailure::ConnectionLost:
+	//	break;
+	//case ENetworkFailure::ConnectionTimeout:
+	//	break;
+	//case ENetworkFailure::FailureReceived:
+	//	break;
+	//case ENetworkFailure::OutdatedClient:
+	//	break;
+	//case ENetworkFailure::OutdatedServer:
+	//	break;
+	//case ENetworkFailure::PendingConnectionFailure:
+	//	break;
+	//case ENetworkFailure::NetGuidMismatch:
+	//	break;
+	//case ENetworkFailure::NetChecksumMismatch:
+	//	break;
+	//default:
+	//	break;
+	//}
+}
+
+void UTestMultiPlayGameInstance::HandleTravelFailure(
+	UWorld* World, ETravelFailure::Type FailureType, const FString& ErrorString)
+{
+	UE_LOG(LogNet, Error, TEXT("HandleTravelFailure 실행"));
+	UE_LOG(LogNet, Error, TEXT("오류 타입 : %d"), (int32)FailureType);
+	UE_LOG(LogNet, Error, TEXT("오류 메시지 : %s"), *ErrorString);
+	switch (FailureType)
+	{
+
+	case ETravelFailure::TravelFailure:
+		if (ErrorString.Contains(TEXT("Full")) || ErrorString.Contains(TEXT("full")))
+		{
+			UE_LOG(LogNet, Error, TEXT("서버가 가득찼습니다."), *ErrorString);
+		}
+		break;
+	default:
+		break;
 	}
 }
